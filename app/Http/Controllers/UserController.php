@@ -64,7 +64,7 @@ class UserController extends Controller
        
         $user->save();
 
-        return response()->json([],200);
+        return response()->json(["Success"],200);
     }
     /** Authenticate the login credentials
      * Display the user name on home page
@@ -77,12 +77,47 @@ class UserController extends Controller
         $password = $request->get('password');
             if (Auth::attempt(array('email' => $uname, 'password' => $password))){
              
-                return redirect()->route('home', ['email'=>$uname, 'id'=>1]);
+                return response()->json(Auth::user()->name,200);
             }
-             return response()
+             return response()->json(["Wrong Credentials!!"]);
             
-            ->header('Content-Type', application/json);
+            
         }
+        /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return $this->loggedOut($request) ?: redirect('/');
+    }
+
+    /**
+     * The user has logged out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     */
+    protected function loggedOut(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Get the guard to be used during authentication.
+     *
+     * @return \Illuminate\Contracts\Auth\StatefulGuard
+     */
+    protected function guard()
+    {
+        return Auth::guard();
+    }
     
 
     /**

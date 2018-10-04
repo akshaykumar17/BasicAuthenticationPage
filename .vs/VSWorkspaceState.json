@@ -1,16 +1,13 @@
 {
   "ExpandedNodes": [
     "",
-    "\\resources",
-    "\\resources\\js",
-    "\\resources\\js\\components",
     "\\vendor",
     "\\vendor\\laravel",
     "\\vendor\\laravel\\framework",
     "\\vendor\\laravel\\framework\\src",
     "\\vendor\\laravel\\framework\\src\\Illuminate",
-    "\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation"
+    "\\vendor\\laravel\\framework\\src\\Illuminate\\Http"
   ],
-  "SelectedNode": "\\resources\\js\\components\\UserLogin.js",
+  "SelectedNode": "\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Request.php",
   "PreviewInSolutionExplorer": true
 }

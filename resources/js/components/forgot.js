@@ -4,26 +4,31 @@ import axios from 'axios';
 
 
 class Forgot extends Component{
-
-
 	constructor(props){
 		super(props);
         this.state = {
-            email: '',
+            email: ''
         };
 	}
 
 	onSubmit(e){
 		e.preventDefault();
-		const {email} = this.state;
-        axios.post('api/password/email', {
-             email,
+        const { email } = this.state;
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        axios.post('http://localhost:8000/password/email',{
+            email
+        }).then(response => {
+            console.log(response);
+          	//this.refs.email.value="";
+            this.setState({ err: false });
+            this.props.history.push('/');
           })
-          .then(response=> {
-          	this.refs.email.value="";
-            this.setState({err: false});
-          })
-          .catch(error=> {
+            .catch(error => {
+                console.log(error.response);
             this.setState({err: true});
             this.refs.email.value="";
           });
@@ -32,14 +37,14 @@ class Forgot extends Component{
 
 	onChange(e){
 		const email = e.target.value;
-		this.setState({email : email});
+        this.setState({ email: email});
 	}
 
 	render(){	
 
-		let error = this.state.err ;
-        let msg = (!error) ? 'We have e-mailed your password reset link!' : 'User doesnt exist' ;
-        let name = (!error) ? 'alert alert-success' : 'alert alert-danger' ;
+		let error = this.state.err;
+        let msg = !error ? 'We have e-mailed your password reset link!' : 'User doesnt exist';
+        let name = !error ? 'alert alert-success' : 'alert alert-danger';
         return (
             <div>
                 <Nav />
@@ -50,17 +55,16 @@ class Forgot extends Component{
                                 <div className="panel-heading">Reset Password</div>
                                 <div className="panel-body">
                                     <div className="col-md-offset-2 col-md-8 col-md-offset-2">
-                                        {error != undefined && <div className={name} role="alert">{msg}</div>}
+                                        {error !== undefined && <div className={name} role="alert">{msg}</div>}
                                     </div>
                                     <form className="form-horizontal" role="form" method="POST" onSubmit={this.onSubmit.bind(this)}>
                                         <div className="form-group">
-                                            <label for="email" className="col-md-4 control-label">E-Mail Address</label>
+                                            <label  className="col-md-4 control-label">E-Mail Address</label>
 
                                             <div className="col-md-6">
-                                                <input id="email" type="email" ref="email" className="form-control" name="email" onChange={this.onChange.bind(this)} required />
+                                                <input id="email" type="email" ref="email" className="form-control" name="email" value={this.state.email} onChange={this.onChange.bind(this)} required />
                                             </div>
                                         </div>
-
                                         <div className="form-group">
                                             <div className="col-md-6 col-md-offset-4">
                                                 <button type="submit" className="btn btn-primary">
@@ -75,7 +79,6 @@ class Forgot extends Component{
                     </div>
                 </div>
             </div>
-
         );
 		}
 }

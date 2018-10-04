@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
@@ -18,8 +18,8 @@ if (document.getElementById('example')) {
                     <Route exact path="/" component={Nav} />
                     <Route path="/login" component={UserLogin} />
                     <Route path="/register" component={Registration} />
-                    <Route path='/home' component={Home} />
-                    <Route path='/forgotpassword' component={Forgot} />
+                    <Route path='/userhome' component={Home} />
+                    <Route path='/password/email' component={Forgot} />
                     <Route path='/password/reset/:token' component={Reset} />
                 </Switch>
             </div>

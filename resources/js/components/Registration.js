@@ -11,10 +11,11 @@ class Registration extends Component {
             name: '',
             email: '',
             password: '',
-            password_confirmation: ''
+            password_confirmation: '',
+            emailDup: false
         };
     }
-    
+
     onSubmit(e) {
         e.preventDefault();
         const { name, email, password, password_confirmation } = this.state;
@@ -29,8 +30,11 @@ class Registration extends Component {
             password
         })
             .then(response => {
-                this.setState({ err: false });
-                this.props.history.push("/home");
+                this.setState({ err: false, emailDup: false });
+                this.props.history.push({
+                    pathname: '/login',
+                    state: { message: Registered }
+                });
             })
             .catch(error => {
                 this.refs.name.value = "";
@@ -38,7 +42,10 @@ class Registration extends Component {
                 this.refs.email.value = "";
                 this.refs.confirm.value = "";
                 this.setState({ err: true });
-                console.log(error.response);
+                if (error.response.data.message.includes('Integrity constraint violation: 1062 Duplicate entry')) {
+                    this.setState({ emailDup: true });
+                }
+
             });
     }
 
@@ -50,7 +57,9 @@ class Registration extends Component {
     render() {
         let err = this.state.err;
         let msg = (!err) ? 'Registered Successfully' : 'Oops! , Something went wrong.';
+        msg = (!this.state.emailDup && !err) ? `${msg}` : `Oops!, Email Duplicate entry User already exists.`;
         let name = (!err) ? 'alert alert-success' : 'alert alert-danger';
+
         return (
             <div>
                 <Nav />
@@ -61,7 +70,7 @@ class Registration extends Component {
                                 <div className="panel-heading">Register</div>
                                 <div className="panel-body">
                                     <div className="col-md-offset-2 col-md-8 col-md-offset-2">
-                                        {err!= undefined && <div className={name} role="alert">{msg}</div>}
+                                        {err !== undefined && <div className={name} role="alert">{msg}</div>}
                                     </div>
                                     <form className="form-horizontal" role="form" method="POST" action="/users" onSubmit={this.onSubmit.bind(this)}>
                                         @csrf
@@ -69,7 +78,7 @@ class Registration extends Component {
                                             <label name="name" className="col-md-4 control-label">Name</label>
 
                                             <div className="col-md-6">
-                                                <input id="name" type="text" className="form-control" ref="name" name="name" onChange={this.onChange.bind(this)} required autoFocus  />
+                                                <input id="name" type="text" className="form-control" ref="name" name="name" onChange={this.onChange.bind(this)} required autoFocus />
                                             </div>
                                         </div>
 
